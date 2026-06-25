@@ -46,7 +46,7 @@ Le fichier `resources/rentals.csv` contient **5 000 enregistrements** de locatio
 
 Après chargement du fichier CSV avec l'option `inferSchema`, Spark déduit automatiquement le type de chaque colonne. Le schéma inféré est le suivant :
 
-![Schéma](images/schema.png)
+![Schéma](resources/images/10.png)
 
 > Le schéma comporte 10 colonnes couvrant les informations de l'utilisateur (`user_id`, `age`, `gender`), les horodatages (`start_time`, `end_time`), les stations (`start_station`, `end_station`), ainsi que les métriques de la location (`duration_minutes`, `price`). Toutes les colonnes autorisent les valeurs nulles (`nullable = true`), ce qui est le comportement par défaut lors de l'inférence de schéma depuis un CSV.
 
@@ -56,7 +56,7 @@ Après chargement du fichier CSV avec l'option `inferSchema`, Spark déduit auto
 
 La méthode `show(5, false)` affiche les 5 premiers enregistrements sans tronquer les valeurs :
 
-![Aperçu des données](images/DisplayView.png)
+![Aperçu des données](resources/images/3.png)
 
 > On observe que les locations proviennent de différentes stations (Quartier Administratif, Aéroport Bus, Souk, Stade), avec des durées et des prix variables. Les données couvrent les années 2024 et 2025.
 
@@ -66,7 +66,7 @@ La méthode `show(5, false)` affiche les 5 premiers enregistrements sans tronque
 
 Le comptage total du DataFrame avec `rentals.count()` donne :
 
-![Nombre total de locations](images/TotalRentals.png)
+![Nombre total de locations](resources/images/14.png)
 
 > Le jeu de données contient exactement **5 000 locations**, ce qui constitue un volume représentatif pour une analyse statistique fiable.
 
@@ -96,7 +96,7 @@ FROM bike_rentals_view
 WHERE duration_minutes > 30
 ```
 
-![Locations > 30 min](images/RentalsMoreThan30Min.png)
+![Locations > 30 min](resources/images/7.png)
 
 > Ce filtre isole les locations longues durée, qui sont souvent associées à des trajets touristiques ou à des distances plus importantes entre stations. Ces locations génèrent généralement des revenus plus élevés.
 
@@ -112,7 +112,7 @@ FROM bike_rentals_view
 WHERE start_station = 'Station Aeroport Bus'
 ```
 
-![Locations depuis Station Aéroport Bus](images/StationAeroport.png)
+![Locations depuis Station Aéroport Bus](resources/images/12.png)
 
 > Cette station est particulièrement fréquentée, ce qui s'explique par sa position stratégique à proximité des transports en commun. Les utilisateurs l'empruntent souvent pour rejoindre d'autres points de la ville.
 
@@ -127,7 +127,7 @@ SELECT ROUND(SUM(price), 2) AS total_revenue
 FROM bike_rentals_view
 ```
 
-![Revenu total](images/TotalRevenue.png)
+![Revenu total](resources/images/15.png)
 
 > Le service génère un revenu total de **41 755,70 DH** sur l'ensemble du jeu de données. Rapporté aux 5 000 locations, cela représente un prix moyen d'environ **8,35 DH** par location.
 
@@ -143,7 +143,7 @@ Regroupement des locations par `start_station` avec comptage :
 rentals.groupBy("start_station").count().show(false);
 ```
 
-![Locations par station](images/RentalsEachStation.png)
+![Locations par station](resources/images/6.png)
 
 > Les 12 stations affichent des volumes d'utilisation relativement proches, oscillant entre 374 (Station Stade) et 447 (Station Hôpital). Cela traduit une répartition géographique équilibrée du réseau de stations.
 
@@ -159,7 +159,7 @@ rentals.groupBy("start_station")
        .show(false);
 ```
 
-![Durée moyenne par station](images/AverageDuration.png)
+![Durée moyenne par station](resources/images/1.png)
 
 > Toutes les stations présentent une durée moyenne comprise entre **23 et 26 minutes**. La Station Quartier Administratif affiche la durée moyenne la plus basse (~23,4 min), tandis que la Station Corniche présente la plus élevée (~25,8 min), ce qui peut s'expliquer par des trajets plus longs depuis les zones récréatives.
 
@@ -175,7 +175,7 @@ rentalsPerStation
     .show(1, false);
 ```
 
-![Station la plus populaire](images/StationWithHigherRentals.png)
+![Station la plus populaire](resources/images/13.png)
 
 > La **Station Hôpital** est la station de départ la plus utilisée avec **447 locations**. Sa position dans une zone à fort passage (établissement hospitalier, accès aux transports) explique cette popularité.
 
@@ -194,7 +194,7 @@ rentals.select(
 ).show(false);
 ```
 
-![Extraction de l'heure](images/StartHour.png)
+![Extraction de l'heure](resources/images/11.png)
 
 > La fonction `hour()` de Spark extrait la composante heure (0-23) d'un timestamp. On observe des locations réparties sur toutes les tranches horaires de la journée, avec des heures variées allant du matin tôt (6h) jusqu'en soirée (19h).
 
@@ -211,7 +211,7 @@ Dataset<Row> perHour =
 perHour.show(false);
 ```
 
-![Locations par heure](images/RentalsPerhour.png)
+![Locations par heure](resources/images/8.png)
 
 > La distribution horaire révèle des pics d'utilisation nets. L'heure 19 (19h-20h) enregistre le volume le plus élevé avec 507 locations, suivie de 17h (499) et 9h (467), correspondant aux heures de pointe du soir et du matin.
 
@@ -226,7 +226,7 @@ perHour.orderBy(col("count").desc())
        .show(1, false);
 ```
 
-![Heure de pointe](images/peakhours.png)
+![Heure de pointe](resources/images/4.png)
 
 > L'**heure de pointe est 19h** avec **507 locations**. Ce résultat est cohérent avec les habitudes de déplacement urbain : les usagers utilisent majoritairement les vélos en fin de journée pour rentrer chez eux ou se déplacer après le travail.
 
@@ -245,7 +245,7 @@ rentals.withColumn("hour", hour(col("start_time")))
        .show(1, false);
 ```
 
-![Station populaire matin](images/PopularStartStation7-12.png)
+![Station populaire matin](resources/images/5.png)
 
 > Entre 7h et 12h, la **Station Technopark** est la plus fréquentée avec **207 départs**. Cela suggère un flux important de travailleurs du secteur technologique se rendant à leur lieu de travail tôt le matin.
 
@@ -262,7 +262,7 @@ rentals.select(avg("age").alias("avg_age"))
        .show(false);
 ```
 
-![Âge moyen](images/AvgAge.png)
+![Âge moyen](resources/images/2.png)
 
 > L'âge moyen des utilisateurs est de **41,52 ans**. Cela indique que le service est principalement utilisé par une population adulte d'âge moyen, ce qui peut orienter les stratégies de communication et de tarification.
 
@@ -278,7 +278,7 @@ rentals.groupBy("gender")
        .show(false);
 ```
 
-![Utilisateurs par genre](images/UserByGender.png)
+![Utilisateurs par genre](resources/images/16.png)
 
 > La répartition montre une légère prédominance masculine : **2 542 locations** effectuées par des hommes (M), **2 286** par des femmes (F), et **172** par des utilisateurs de la catégorie « Autre ». Le service est néanmoins utilisé de façon relativement équilibrée entre les deux genres principaux.
 
@@ -302,7 +302,7 @@ GROUP BY age_group
 ORDER BY total DESC
 ```
 
-![Locations par groupe d'âge](images/RentByAgeGroupe.png)
+![Locations par groupe d'âge](resources/images/9.png)
 
 > Le groupe **51+** représente la tranche la plus active avec **1 567 locations**, suivi des **18-30 ans** (1 362). Les tranches intermédiaires **41-50** (1 054) et **31-40** (1 017) sont moins représentées. Ce résultat, contre-intuitif, suggère que les seniors et les jeunes adultes constituent les principaux utilisateurs du service, peut-être pour des raisons de mobilité douce ou de loisirs.
 
